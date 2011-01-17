@@ -85,6 +85,26 @@ public class Extractor {
   }
 
   /**
+   * Extract @username/list references from Tweet text.
+   *
+   * @param text of the tweet from which to extract lists
+   * @return List of lists referenced (without the leading @ sign)
+   */
+  public List<String> extractMentionedLists(String text) {
+    if (text == null) {
+      return null;
+    }
+
+    List<String> extracted = new ArrayList<String>();
+    Matcher matcher = Regex.EXTRACT_MENTIONED_LISTS.matcher(text);
+    while (matcher.find()) {
+      extracted.add(matcher.group(Regex.EXTRACT_MENTIONED_LIST_GROUP_USERNAME_AND_LIST));
+    }
+
+    return extracted;
+  }
+
+  /**
    * Extract a @username reference from the beginning of Tweet text. A reply is an occurance of @username at the
    * beginning of a Tweet, preceded by 0 or more spaces.
    *

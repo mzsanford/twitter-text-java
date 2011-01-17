@@ -23,6 +23,7 @@ public class ConformanceTest extends TestCase {
   private Extractor extractor = new Extractor();
   private Autolink linker = new Autolink();
   private HitHighlighter hitHighlighter = new HitHighlighter();
+  private Validator validator = new Validator();
 
   public void setUp() {
     assertNotNull("Missing required system property: " + CONFORMANCE_DIR_PROPERTY, System.getProperty(CONFORMANCE_DIR_PROPERTY));
@@ -73,7 +74,7 @@ public class ConformanceTest extends TestCase {
       for (Map<String, Object> configEntry : expectedConfig) {
         expected.add(new Extractor.Entity(configEntry, "hashtag"));
       }
-      
+
       assertEquals((String)testCase.get(KEY_DESCRIPTION),
                    expected,
                    extractor.extractHashtagsWithIndices((String)testCase.get(KEY_INPUT)));
@@ -145,12 +146,67 @@ public class ConformanceTest extends TestCase {
     File yamlFile = new File(conformanceDir, "hit_highlighting.yml");
     List testCases = loadConformanceData(yamlFile, "plain_text");
     List<List<Integer>> hits = null;
-    
+
     for (Map testCase : (List<Map>)testCases) {
       hits = (List<List<Integer>>)testCase.get(KEY_HIGHLIGHT_HITS);
       assertEquals((String)testCase.get(KEY_DESCRIPTION),
                    (String)testCase.get(KEY_EXPECTED_OUTPUT),
                    hitHighlighter.highlight( (String)testCase.get(KEY_INPUT), hits));
+    }
+  }
+
+  public void testValidateTweets() throws Exception {
+    File yamlFile = new File(conformanceDir, "validate.yml");
+    List testCases = loadConformanceData(yamlFile, "tweets");
+
+    for (Map testCase : (List<Map>)testCases) {
+      assertEquals((String)testCase.get(KEY_DESCRIPTION),
+                   (Boolean)testCase.get(KEY_EXPECTED_OUTPUT),
+                   validator.isValidTweet( (String)testCase.get(KEY_INPUT) ));
+    }
+  }
+
+  public void testValidateUsernames() throws Exception {
+    File yamlFile = new File(conformanceDir, "validate.yml");
+    List testCases = loadConformanceData(yamlFile, "usernames");
+
+    for (Map testCase : (List<Map>)testCases) {
+      assertEquals((String)testCase.get(KEY_DESCRIPTION),
+                   (Boolean)testCase.get(KEY_EXPECTED_OUTPUT),
+                   validator.isValidUsername( (String)testCase.get(KEY_INPUT) ));
+    }
+  }
+
+  public void testValidateLists() throws Exception {
+    File yamlFile = new File(conformanceDir, "validate.yml");
+    List testCases = loadConformanceData(yamlFile, "lists");
+
+    for (Map testCase : (List<Map>)testCases) {
+      assertEquals((String)testCase.get(KEY_DESCRIPTION),
+                   (Boolean)testCase.get(KEY_EXPECTED_OUTPUT),
+                   validator.isValidList( (String)testCase.get(KEY_INPUT) ));
+    }
+  }
+
+  public void testValidateHashtags() throws Exception {
+    File yamlFile = new File(conformanceDir, "validate.yml");
+    List testCases = loadConformanceData(yamlFile, "hashtags");
+
+    for (Map testCase : (List<Map>)testCases) {
+      assertEquals((String)testCase.get(KEY_DESCRIPTION),
+                   (Boolean)testCase.get(KEY_EXPECTED_OUTPUT),
+                   validator.isValidHashtag( (String)testCase.get(KEY_INPUT) ));
+    }
+  }
+
+  public void testValidateURLs() throws Exception {
+    File yamlFile = new File(conformanceDir, "validate.yml");
+    List testCases = loadConformanceData(yamlFile, "urls");
+
+    for (Map testCase : (List<Map>)testCases) {
+      assertEquals((String)testCase.get(KEY_DESCRIPTION),
+                   (Boolean)testCase.get(KEY_EXPECTED_OUTPUT),
+                   validator.isValidURL( (String)testCase.get(KEY_INPUT) ));
     }
   }
 
