@@ -137,11 +137,11 @@ public class Extractor {
 
     List<String> urls = new ArrayList<String>();
 
-    Matcher matcher = Regex.VALID_URL.matcher(text);
+    Matcher matcher = Regex.EXTRACT_URL.matcher(text);
     while (matcher.find()) {
-      String protocol = matcher.group(Regex.VALID_URL_GROUP_PROTOCOL);
+      String protocol = matcher.group(Regex.EXTRACT_URL_GROUP_PROTOCOL);
       if (!protocol.isEmpty()) {
-        urls.add(matcher.group(Regex.VALID_URL_GROUP_URL));
+        urls.add(matcher.group(Regex.EXTRACT_URL_GROUP_URL));
       }
     }
 

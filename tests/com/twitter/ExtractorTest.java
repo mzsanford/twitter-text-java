@@ -5,7 +5,6 @@ import java.util.*;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.framework.Test;
-import com.twitter.*;
 
 public class ExtractorTest extends TestCase {
   protected Extractor extractor;

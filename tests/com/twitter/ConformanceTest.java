@@ -1,7 +1,6 @@
 
 package com.twitter;
 
-import java.util.regex.*;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import junit.framework.TestCase;
-import com.twitter.*;
 import org.ho.yaml.Yaml;
 
 public class ConformanceTest extends TestCase {
