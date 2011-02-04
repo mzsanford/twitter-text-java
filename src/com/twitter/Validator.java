@@ -111,20 +111,11 @@ public class Validator {
     if (authority == null) {
       return Boolean.FALSE;
     }
-    Matcher authorityMatcher = Regex.VALIDATE_URL_AUTHORITY_PATTERN.matcher(authority);
-    if (!authorityMatcher.matches()) {
-      return Boolean.FALSE;
-    }
-
-    String host = authorityMatcher.group(Regex.VALIDATE_URL_AUTHORITY_GROUP_HOST);
-    if (host == null) {
-      return Boolean.FALSE;
-    }
     if (allowUnicodeDomains) {
-      if(!Regex.VALIDATE_URL_UNICODE_HOST_PATTERN.matcher(host).matches()) {
+      if (!Regex.VALIDATE_URL_UNICODE_AUTHORITY_PATTERN.matcher(authority).matches()) {
         return Boolean.FALSE;
       }
-    } else if (!Regex.VALIDATE_URL_HOST_PATTERN.matcher(host).matches()) {
+    } else if (!Regex.VALIDATE_URL_AUTHORITY_PATTERN.matcher(authority).matches()) {
       return Boolean.FALSE;
     }
 

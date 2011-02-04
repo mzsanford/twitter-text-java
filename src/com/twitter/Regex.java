@@ -90,9 +90,9 @@ public class Regex {
 
   // This is more strict than the rfc specifies
   private static final String VALIDATE_URL_DOMAIN_SEGMENT = "(?:[a-z0-9](?:[a-z0-9\\-]*[a-z0-9])?)";
-  private static final String VALIDATE_URL_DOMAIN = "(?:" +
-                                                    VALIDATE_URL_DOMAIN_SEGMENT +
-                                                    "\\.?)+";
+  private static final String VALIDATE_URL_DOMAIN_TLD = "(?:[a-z](?:[a-z0-9\\-]*[a-z0-9])?)";
+  private static final String VALIDATE_URL_DOMAIN =
+    "(?:(?:" + VALIDATE_URL_DOMAIN_SEGMENT + "\\.)+" + VALIDATE_URL_DOMAIN_TLD + ")";
 
   private static final String VALIDATE_URL_HOST = "(?:" +
                                                   VALIDATE_URL_IP + "|" +
@@ -102,9 +102,10 @@ public class Regex {
   // Unencoded internationalized domains
   private static final String VALIDATE_URL_UNICODE_DOMAIN_SEGMENT =
     "(?:(?:[a-z0-9]|[^\u0000-\u007F])(?:(?:[a-z0-9\\-]|[^\u0000-\u007F])*(?:[a-z0-9]|[^\u0000-\u007F]))?)";
-  private static final String VALIDATE_URL_UNICODE_DOMAIN = "(?:" +
-                                                             VALIDATE_URL_UNICODE_DOMAIN_SEGMENT +
-                                                             "\\.?)+";
+  private static final String VALIDATE_URL_UNICODE_DOMAIN_TLD =
+    "(?:(?:[a-z]|[^\u0000-\u007F])(?:(?:[a-z0-9\\-]|[^\u0000-\u007F])*(?:[a-z0-9]|[^\u0000-\u007F]))?)";
+  private static final String VALIDATE_URL_UNICODE_DOMAIN =
+    "(?:(?:" + VALIDATE_URL_UNICODE_DOMAIN_SEGMENT + "\\.)+" + VALIDATE_URL_UNICODE_DOMAIN_TLD + ")";
 
   private static final String VALIDATE_URL_UNICODE_HOST = "(?:" +
                                                           VALIDATE_URL_IP + "|" +
@@ -115,8 +116,13 @@ public class Regex {
 
   private static final String VALIDATE_URL_AUTHORITY =
     "(?:(" + VALIDATE_URL_USERINFO + ")@)?" +    //  $1 userinfo
-    "([^/?#:]+)" +                               //  $2 host
-    "(?::(" + VALIDATE_URL_PORT + "))?";    //  $3 port
+    "(" + VALIDATE_URL_HOST + ")" +              //  $2 host
+    "(?::(" + VALIDATE_URL_PORT + "))?";         //  $3 port
+
+  private static final String VALIDATE_URL_UNICODE_AUTHORITY =
+    "(?:(" + VALIDATE_URL_USERINFO + ")@)?" +    //  $1 userinfo
+    "(" + VALIDATE_URL_UNICODE_HOST + ")" +      //  $2 host
+    "(?::(" + VALIDATE_URL_PORT + "))?";         //  $3 port
 
   private static final String VALIDATE_URL_PATH = "(/" + VALIDATE_URL_PCHAR + "*)*";
   private static final String VALIDATE_URL_QUERY = "(" + VALIDATE_URL_PCHAR + "|/|\\?)*";
@@ -182,6 +188,8 @@ public class Regex {
       Pattern.compile(VALIDATE_URL_SCHEME, Pattern.CASE_INSENSITIVE);
   public static final Pattern VALIDATE_URL_AUTHORITY_PATTERN =
       Pattern.compile(VALIDATE_URL_AUTHORITY, Pattern.CASE_INSENSITIVE);
+  public static final Pattern VALIDATE_URL_UNICODE_AUTHORITY_PATTERN =
+    Pattern.compile(VALIDATE_URL_UNICODE_AUTHORITY, Pattern.CASE_INSENSITIVE);
   public static final Pattern VALIDATE_URL_USERINFO_PATTERN =
       Pattern.compile(VALIDATE_URL_USERINFO, Pattern.CASE_INSENSITIVE);
   public static final Pattern VALIDATE_URL_HOST_PATTERN =
