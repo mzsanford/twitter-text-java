@@ -83,6 +83,14 @@ public class Validator {
   }
 
   public Boolean isValidURL(String text) {
+    return validateURL(text, true);
+  }
+
+  public Boolean isValidASCIIURL(String text) {
+    return validateURL(text, false);
+  }
+
+  private Boolean validateURL(String text, boolean allowUnicodeDomains) {
     if (text == null || text.length() < MINIMUM_URL_LENGTH) {
       return Boolean.FALSE;
     }
@@ -108,20 +116,15 @@ public class Validator {
       return Boolean.FALSE;
     }
 
-    String userinfo = authorityMatcher.group(Regex.VALIDATE_URL_AUTHORITY_GROUP_USERINFO);
-    // optional userinfo
-    if (userinfo != null && !Regex.VALIDATE_URL_USERINFO_PATTERN.matcher(userinfo).matches()) {
-      return Boolean.FALSE;
-    }
-
     String host = authorityMatcher.group(Regex.VALIDATE_URL_AUTHORITY_GROUP_HOST);
-    if (host == null || !Regex.VALIDATE_URL_HOST_PATTERN.matcher(host).matches()) {
+    if (host == null) {
       return Boolean.FALSE;
     }
-
-    // optional port
-    String port = authorityMatcher.group(Regex.VALIDATE_URL_AUTHORITY_GROUP_PORT);
-    if (port != null && !Regex.VALIDATE_URL_PORT_PATTERN.matcher(port).matches()) {
+    if (allowUnicodeDomains) {
+      if(!Regex.VALIDATE_URL_UNICODE_HOST_PATTERN.matcher(host).matches()) {
+        return Boolean.FALSE;
+      }
+    } else if (!Regex.VALIDATE_URL_HOST_PATTERN.matcher(host).matches()) {
       return Boolean.FALSE;
     }
 

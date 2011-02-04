@@ -83,9 +83,15 @@ public class ConformanceTest extends TestCase {
     File yamlFile = new File(conformanceDir, "extract.yml");
     List testCases = loadConformanceData(yamlFile, "urls");
     for (Map testCase : (List<Map>)testCases) {
+      List<String> expected = (List)testCase.get(KEY_EXPECTED_OUTPUT);
       assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   (List)testCase.get(KEY_EXPECTED_OUTPUT),
+                   expected,
                    extractor.extractURLs((String)testCase.get(KEY_INPUT)));
+      // test that the expected output validates
+      for (String url : expected) {
+        assertEquals("expected URL [" + url + "] not valid",
+            Boolean.TRUE, validator.isValidURL(url));
+      }
     }
   }
 
