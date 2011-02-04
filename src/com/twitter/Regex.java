@@ -65,14 +65,14 @@ public class Regex {
                                                    VALIDATE_URL_UNRESERVED + "|" +
                                                    VALIDATE_URL_PCT_ENCODED + "|" +
                                                    VALIDATE_URL_SUB_DELIMS + "|" +
-                                                   ":|@" + ")";
+                                                   ":|@)";
 
   private static final String VALIDATE_URL_SCHEME = "(?:[a-z][a-z0-9+\\-.]*)";
   private static final String VALIDATE_URL_USERINFO = "(?:" +
                                                       VALIDATE_URL_UNRESERVED + "|" +
                                                       VALIDATE_URL_PCT_ENCODED + "|" +
                                                       VALIDATE_URL_SUB_DELIMS + "|" +
-                                                      ":" + ")*";
+                                                      ":)*";
 
   private static final String VALIDATE_URL_DEC_OCTET =
        "(?:[0-9]|(?:[1-9][0-9])|(?:1[0-9]{2})|(?:2[0-4][0-9])|(?:25[0-5]))";
@@ -81,7 +81,7 @@ public class Regex {
                                                   "(?:\\." + VALIDATE_URL_DEC_OCTET + "){3})";
 
   // Punting on real IPv6 validation for now
-  private static final String VALIDATE_URL_IPV6 = "(?:\\[" +"[a-f0-9:\\.]+" + "\\])";
+  private static final String VALIDATE_URL_IPV6 = "(?:\\[[a-f0-9:\\.]+\\])";
 
   // Also punting on IPvFuture for now
   private static final String VALIDATE_URL_IP = "(?:" +
@@ -116,9 +116,9 @@ public class Regex {
   private static final String VALIDATE_URL_AUTHORITY =
     "(?:(" + VALIDATE_URL_USERINFO + ")@)?" +    //  $1 userinfo
     "([^/?#:]+)" +                               //  $2 host
-    "(?:" + ":(" + VALIDATE_URL_PORT + "))?";    //  $3 port
+    "(?::(" + VALIDATE_URL_PORT + "))?";    //  $3 port
 
-  private static final String VALIDATE_URL_PATH = "(" + "/" + VALIDATE_URL_PCHAR + "*" + ")*";
+  private static final String VALIDATE_URL_PATH = "(/" + VALIDATE_URL_PCHAR + "*)*";
   private static final String VALIDATE_URL_QUERY = "(" + VALIDATE_URL_PCHAR + "|/|\\?)*";
   private static final String VALIDATE_URL_FRAGMENT = "(" + VALIDATE_URL_PCHAR + "|/|\\?)*";
 
