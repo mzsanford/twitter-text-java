@@ -1,8 +1,8 @@
 
 package com.twitter;
 
-import java.net.*;
 import java.util.*;
+import java.util.regex.*;
 import java.text.*;
 
 /**
@@ -11,6 +11,8 @@ import java.text.*;
 public class Validator {
   /** Minimum length of a string that can parse as a valid URL. Used for optimizations */
   private static final Integer MINIMUM_URL_LENGTH = 10; // "http://x.x"
+  private static final Set<String> VALID_SCHEMES =
+    new HashSet<String>(Arrays.asList("http", "https"));
 
   /** Extractor instance used to maintain compatibility */
   private final Extractor extractor;
@@ -81,17 +83,58 @@ public class Validator {
   }
 
   public Boolean isValidURL(String text) {
-    URL url;
+    return validateURL(text, true);
+  }
 
-    if (text != null && text.length() >= MINIMUM_URL_LENGTH) {
-      try {
-        url = new URL(text);
-        // Do not allow for relative URLs
-        return text.equals(url.toExternalForm());
-      } catch (MalformedURLException exception) {
-        // Ignored.
-      }
+  public Boolean isValidASCIIURL(String text) {
+    return validateURL(text, false);
+  }
+
+  private Boolean validateURL(String text, boolean allowUnicodeDomains) {
+    if (text == null || text.length() < MINIMUM_URL_LENGTH) {
+      return Boolean.FALSE;
     }
-    return Boolean.FALSE;
+
+    Matcher urlMatcher = Regex.VALIDATE_URL_UNENCODED_PATTERN.matcher(text);
+    if (!urlMatcher.matches()) {
+      return Boolean.FALSE;
+    }
+
+    String scheme = urlMatcher.group(Regex.VALIDATE_URL_UNENCODED_GROUP_SCHEME);
+    if (scheme == null ||
+        !Regex.VALIDATE_URL_SCHEME_PATTERN.matcher(scheme).matches() ||
+        !VALID_SCHEMES.contains(scheme.toLowerCase())) {
+      return Boolean.FALSE;
+    }
+
+    String authority = urlMatcher.group(Regex.VALIDATE_URL_UNENCODED_GROUP_AUTHORITY);
+    if (authority == null) {
+      return Boolean.FALSE;
+    }
+    if (allowUnicodeDomains) {
+      if (!Regex.VALIDATE_URL_UNICODE_AUTHORITY_PATTERN.matcher(authority).matches()) {
+        return Boolean.FALSE;
+      }
+    } else if (!Regex.VALIDATE_URL_AUTHORITY_PATTERN.matcher(authority).matches()) {
+      return Boolean.FALSE;
+    }
+
+    String path = urlMatcher.group(Regex.VALIDATE_URL_UNENCODED_GROUP_PATH);
+    if (path == null || !Regex.VALIDATE_URL_PATH_PATTERN.matcher(path).matches()) {
+      return Boolean.FALSE;
+    }
+
+    String query = urlMatcher.group(Regex.VALIDATE_URL_UNENCODED_GROUP_QUERY);
+    // optional query
+    if (query != null && !Regex.VALIDATE_URL_QUERY_PATTERN.matcher(query).matches()) {
+      return Boolean.FALSE;
+    }
+
+    String fragment = urlMatcher.group(Regex.VALIDATE_URL_UNENCODED_GROUP_FRAGMENT);
+    // check optional fragment
+    if (fragment != null && !Regex.VALIDATE_URL_FRAGMENT_PATTERN.matcher(fragment).matches()) {
+      return Boolean.FALSE;
+    }
+    return Boolean.TRUE;
   }
 }

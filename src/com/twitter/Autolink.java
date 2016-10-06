@@ -1,7 +1,6 @@
 
 package com.twitter;
 
-import java.util.*;
 import java.util.regex.*;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -162,21 +161,21 @@ public class Autolink {
    * @return text with auto-link HTML added
    */
   public String autoLinkURLs(String text) {
-    Matcher matcher = Regex.VALID_URL.matcher(text);
+    Matcher matcher = Regex.EXTRACT_URL.matcher(text);
     StringBuffer sb = new StringBuffer(text.length());
 
     while (matcher.find()) {
-      String protocol = matcher.group(Regex.VALID_URL_GROUP_PROTOCOL);
+      String protocol = matcher.group(Regex.EXTRACT_URL_GROUP_PROTOCOL);
       if (!protocol.isEmpty()) {
         // query string needs to be html escaped
-        String url = matcher.group(Regex.VALID_URL_GROUP_URL);
-        String query_string = matcher.group(Regex.VALID_URL_GROUP_QUERY_STRING);
+        String url = matcher.group(Regex.EXTRACT_URL_GROUP_URL);
+        String query_string = matcher.group(Regex.EXTRACT_URL_GROUP_QUERY_STRING);
         if (query_string != null)
             url = url.replace(query_string, StringEscapeUtils.escapeHtml(query_string));
 
         matcher.appendReplacement(sb,
           String.format("$%s<a href=\"%s\"%s>%s</a>",
-            Regex.VALID_URL_GROUP_BEFORE,
+            Regex.EXTRACT_URL_GROUP_BEFORE,
             url,
             noFollow ? NO_FOLLOW_HTML_ATTRIBUTE : "",
             url
@@ -184,7 +183,7 @@ public class Autolink {
         continue;
       }
 
-      matcher.appendReplacement(sb, String.format("$%s", Regex.VALID_URL_GROUP_ALL));
+      matcher.appendReplacement(sb, String.format("$%s", Regex.EXTRACT_URL_GROUP_ALL));
 
     }
     matcher.appendTail(sb);

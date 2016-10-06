@@ -1,9 +1,7 @@
 
 package com.twitter;
 
-import java.util.regex.*;
 import junit.framework.TestCase;
-import com.twitter.*;
 
 public class AutolinkTest extends TestCase {
   private Autolink linker;

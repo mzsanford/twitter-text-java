@@ -1,7 +1,6 @@
 
 package com.twitter;
 
-import java.util.regex.*;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import junit.framework.TestCase;
-import com.twitter.*;
 import org.ho.yaml.Yaml;
 
 public class ConformanceTest extends TestCase {
@@ -85,9 +83,15 @@ public class ConformanceTest extends TestCase {
     File yamlFile = new File(conformanceDir, "extract.yml");
     List testCases = loadConformanceData(yamlFile, "urls");
     for (Map testCase : (List<Map>)testCases) {
+      List<String> expected = (List)testCase.get(KEY_EXPECTED_OUTPUT);
       assertEquals((String)testCase.get(KEY_DESCRIPTION),
-                   (List)testCase.get(KEY_EXPECTED_OUTPUT),
+                   expected,
                    extractor.extractURLs((String)testCase.get(KEY_INPUT)));
+      // test that the expected output validates
+      for (String url : expected) {
+        assertEquals("expected URL [" + url + "] not valid",
+            Boolean.TRUE, validator.isValidURL(url));
+      }
     }
   }
 
